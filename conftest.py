@@ -16,11 +16,9 @@ def driver():
 def pytest_configure(config):
     global pytest_html
     pytest_html = config.pluginmanager.getplugin("html")
-    # DEBUG: confirmar que conftest se cargó
-    print("[DEBUG] conftest.py loaded, pytest_html =", bool(pytest_html))
-    import sys; sys.stdout.flush()
 
 # optional logger fixture (kept as fallback)
+
 @pytest.fixture
 def logger(request):
     buf = io.StringIO()
@@ -36,7 +34,8 @@ def logger(request):
     yield lg
 
     handler.flush()
-    # almacenar logs en el nodo como fallback (si caplog no se usa)
+    # store logs on node as fallback (if caplog is not used)
+
     request.node._captured_log = buf.getvalue()
     lg.removeHandler(handler)
     try:
@@ -45,7 +44,7 @@ def logger(request):
         pass
 
 def _ensure_report_extras(rep):
-    """Asegura y devuelve la lista de 'extras' compatible con versiones nuevas/antiguas."""
+    """Ensures and returns the list of 'extras' compatible with new/old versions."""
     if hasattr(rep, "extras"):
         cur = getattr(rep, "extras", None)
         if cur is None:
@@ -68,13 +67,15 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
 
-    # solo durante la fase "call"
+    # only during the "call" phase
+
     if rep.when != "call":
         return
 
     extras = _ensure_report_extras(rep)
 
-    # 1) traceback si falló
+    # 1) traceback if failed
+
     try:
         if rep.failed:
             long_text = getattr(rep, "longreprtext", None) or str(getattr(rep, "longrepr", ""))
@@ -87,11 +88,13 @@ def pytest_runtest_makereport(item, call):
         pass
 
     # 2) logs: preferir caplog (pytest builtin), luego fallback a request.node._captured_log
+
     try:
         caplog = item.funcargs.get("caplog")
         caplog_text = None
         if caplog:
-            # caplog.text contiene todo lo capturado
+            # caplog.text contains everything captured
+
             try:
                 caplog_text = getattr(caplog, "text", None) or "\n".join(r.getMessage() for r in getattr(caplog, "records", []))
             except Exception:
@@ -106,7 +109,7 @@ def pytest_runtest_makereport(item, call):
     except Exception:
         pass
 
-    # 3) screenshot + URL + title (si hay driver fixture)
+    # 3) screenshot + URL + title
     try:
         driver = item.funcargs.get("driver")
         if driver:
@@ -131,7 +134,8 @@ def pytest_runtest_makereport(item, call):
                             extras.append(pytest_html.extras.image(path))
                         except Exception:
                             extras.append(pytest_html.extras.text(f"Screenshot saved: {path}"))
-                    # contexto
+                    # Context
+
                     try:
                         extras.append(pytest_html.extras.text(f"URL: {driver.current_url}"))
                         extras.append(pytest_html.extras.text(f"Title: {driver.title}"))

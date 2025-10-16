@@ -9,28 +9,34 @@ def test_navigation_flow(driver, caplog, username="standard_user", password="sec
     page = LoginPage(driver)
     page.open_login_page()
     page.login(username, password)
-    
-    logging.getLogger().info(f"Assert: verificar que el logo de la app es visible")
-    assert HeaderContainer.is_app_logo_visible(driver), "El logo de la app no es visible"
+    # Verify the app logo is visible
+    logging.getLogger().info("Assert: check that the app logo is visible")
+    assert HeaderContainer.is_app_logo_visible(driver), "App logo is not visible"
 
-    logging.getLogger().info(f"Assert: verificar que el menú lateral es visible")
-    assert HeaderContainer.is_side_drawer_menu_visible(driver), "El menú lateral no es visible"
+    # Verify the side drawer menu is visible
+    logging.getLogger().info("Assert: check that the side drawer menu is visible")
+    assert HeaderContainer.is_side_drawer_menu_visible(driver), "Side drawer menu is not visible"
 
-    logging.getLogger().info(f"Assert: verificar que '/inventory.html' está en {driver.current_url}")
-    assert "/inventory.html" in driver.current_url, "No se navegó a /inventory.html"
+    # Verify we are on the inventory page
+    logging.getLogger().info(f"Assert: check that '/inventory.html' is in {driver.current_url}")
+    assert "/inventory.html" in driver.current_url, "Did not navigate to /inventory.html"
 
-    logging.getLogger().info(f"Assert: verificar que el título del inventario es 'Products' -> '{HeaderContainer.get_inventory_title(driver)}'")
-    assert HeaderContainer.get_inventory_title(driver) == "Products", "Título de inventario incorrecto"
+    # Verify the inventory page title is 'Products'
+    logging.getLogger().info(f"Assert: check that inventory title is 'Products' -> '{HeaderContainer.get_inventory_title(driver)}'")
+    assert HeaderContainer.get_inventory_title(driver) == "Products", "Incorrect inventory title"
 
-    logging.getLogger().info(f"Assert: verificar que hay elementos en la lista de inventario")   
-    assert InventoryContainer.get_items_count(driver) > 0, "No se encontraron elementos en la lista de inventario"
+    # Verify there are items in the inventory list
+    logging.getLogger().info("Assert: check that there are items in the inventory list")
+    assert InventoryContainer.get_items_count(driver) > 0, "No items found in the inventory list"
 
-    logging.getLogger().info(f"Assert: verificar que la lista de inventario es visible")
-    assert InventoryContainer.is_inventory_list_visible(driver), "La lista de inventario no es visible"
+    # Verify the inventory list is visible
+    logging.getLogger().info("Assert: check that the inventory list is visible")
+    assert InventoryContainer.is_inventory_list_visible(driver), "Inventory list is not visible"
 
-    logging.getLogger().info(f"Assert: verificar que el precio del primer ítem es '$29.99' -> '{InventoryContainer.get_inventory_price(driver)}'")
-    assert InventoryContainer.get_inventory_price(driver) == "$29.99", "Precio del primer ítem incorrecto"
+    # Verify the price and name of the first item
+    logging.getLogger().info(f"Assert: check that the first item's price is '$29.99' -> '{InventoryContainer.get_inventory_price(driver)}'")
+    assert InventoryContainer.get_inventory_price(driver) == "$29.99", "First item price is incorrect"
 
-    logging.getLogger().info(f"Assert: verificar que el nombre del primer ítem es 'Sauce Labs Backpack' -> '{InventoryContainer.get_inventory_item_name(driver)}'")
-    assert InventoryContainer.get_inventory_item_name(driver) == "Sauce Labs Backpack", "Nombre del primer ítem incorrecto"
+    logging.getLogger().info(f"Assert: check that the first item's name is 'Sauce Labs Backpack' -> '{InventoryContainer.get_inventory_item_name(driver)}'")
+    assert InventoryContainer.get_inventory_item_name(driver) == "Sauce Labs Backpack", "First item name is incorrect"
     
