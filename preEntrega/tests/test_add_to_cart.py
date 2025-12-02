@@ -1,11 +1,14 @@
 import logging
+
+import pytest
 from preEntrega.pages.cart_page import CartListContainer
 from preEntrega.pages.inventory_page import InventoryContainer
 from preEntrega.pages.inventory_page import HeaderContainer
 from preEntrega.pages.login_page import LoginPage
+from preEntrega.data.data_login import valid_login
 
-
-def test_add_to_cart(driver, caplog, username="standard_user", password="secret_sauce"):
+@pytest.mark.parametrize("username,password", valid_login)
+def test_add_to_cart(driver, caplog, username, password):
     caplog.set_level(logging.INFO)
     page = LoginPage(driver)
     page.open_login_page()
