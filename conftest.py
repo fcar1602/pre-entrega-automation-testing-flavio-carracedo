@@ -4,8 +4,10 @@ import base64
 import pytest
 import logging
 import io
+from preEntrega.api_utils import APIClient
 from selenium import webdriver
-
+import pytest
+from faker import Faker
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -38,8 +40,18 @@ def driver():
     driver.quit()
 
 
-# optional logger fixture (kept as fallback)
 
+# fixture for Faker instance
+@pytest.fixture(scope="session")
+def fake():
+    return Faker()
+
+# fixture for APIClient instance
+@pytest.fixture(scope="session")
+def api():
+    return APIClient("https://dummyjson.com")
+
+# optional logger fixture (kept as fallback)
 @pytest.fixture
 def logger(request):
     buf = io.StringIO()
@@ -95,14 +107,20 @@ def pytest_runtest_makereport(item, call):
 
     extras = _ensure_report_extras(rep)
 
+    # obtain html plugin safely
+    try:
+        plugin_html = item.config.pluginmanager.get_plugin("html")
+    except Exception:
+        plugin_html = None
+
     # 1) traceback if failed
 
     try:
         if rep.failed:
             long_text = getattr(rep, "longreprtext", None) or str(getattr(rep, "longrepr", ""))
             if long_text:
-                if pytest_html:
-                    extras.append(pytest_html.extras.text("FAILURE TRACEBACK:\n" + long_text))
+                if plugin_html:
+                    extras.append(plugin_html.extras.text("FAILURE TRACEBACK:\n" + long_text))
                 else:
                     extras.append("FAILURE TRACEBACK:\n" + long_text)
     except Exception:
@@ -123,8 +141,8 @@ def pytest_runtest_makereport(item, call):
 
         captured = caplog_text or getattr(item, "_captured_log", None)
         if captured:
-            if pytest_html:
-                extras.append(pytest_html.extras.text("TEST LOGS:\n" + captured))
+            if plugin_html:
+                extras.append(plugin_html.extras.text("TEST LOGS:\n" + captured))
             else:
                 extras.append("TEST LOGS:\n" + captured)
     except Exception:
@@ -144,26 +162,26 @@ def pytest_runtest_makereport(item, call):
             except Exception:
                 path = None
 
-            if path and pytest_html:
+            if path and plugin_html:
                 try:
                     with open(path, "rb") as f:
                         b64 = base64.b64encode(f.read()).decode("utf-8")
                     try:
-                        extras.append(pytest_html.extras.png(b64))
+                        extras.append(plugin_html.extras.png(b64))
                     except Exception:
                         try:
-                            extras.append(pytest_html.extras.image(path))
+                            extras.append(plugin_html.extras.image(path))
                         except Exception:
-                            extras.append(pytest_html.extras.text(f"Screenshot saved: {path}"))
+                            extras.append(plugin_html.extras.text(f"Screenshot saved: {path}"))
                     # Context
 
                     try:
-                        extras.append(pytest_html.extras.text(f"URL: {driver.current_url}"))
-                        extras.append(pytest_html.extras.text(f"Title: {driver.title}"))
+                        extras.append(plugin_html.extras.text(f"URL: {driver.current_url}"))
+                        extras.append(plugin_html.extras.text(f"Title: {driver.title}"))
                     except Exception:
                         pass
                 except Exception:
-                    extras.append(pytest_html.extras.text(f"Screenshot saved: {path}"))
+                    extras.append(plugin_html.extras.text(f"Screenshot saved: {path}"))
             elif path:
                 extras.append(f"Screenshot saved: {path}")
     except Exception:
