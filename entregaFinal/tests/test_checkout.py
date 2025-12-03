@@ -2,17 +2,17 @@ import logging
 
 import pytest
 
-from preEntrega.data.data_login import valid_login
-from preEntrega.pages.login_page import LoginPage
+from entregaFinal.data.data_login import valid_login
+from entregaFinal.pages.login_page import LoginPage
 
-from preEntrega.pages.inventory_page import InventoryContainer
-from preEntrega.pages.inventory_page import HeaderContainer
+from entregaFinal.pages.inventory_page import InventoryContainer
+from entregaFinal.pages.inventory_page import HeaderContainer
 
-from preEntrega.pages.cart_page import CartListContainer
+from entregaFinal.pages.cart_page import CartListContainer
 
-from preEntrega.pages.checkout_page import checkoutStepOnePage
-from preEntrega.pages.checkout_page import checkoutStepTwoPage
-from preEntrega.pages.checkout_page import checkoutCompletePage
+from entregaFinal.pages.checkout_page import checkoutStepOnePage
+from entregaFinal.pages.checkout_page import checkoutStepTwoPage
+from entregaFinal.pages.checkout_page import checkoutCompletePage
 
 
 @pytest.mark.parametrize("username,password", valid_login, ids=[u for (u, _) in valid_login])

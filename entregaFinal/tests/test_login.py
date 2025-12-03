@@ -1,8 +1,8 @@
 import logging
 import pytest
-from preEntrega.pages.login_page import LoginPage
-from preEntrega.pages.inventory_page import HeaderContainer
-from preEntrega.data.data_login import data_login
+from entregaFinal.pages.login_page import LoginPage
+from entregaFinal.pages.inventory_page import HeaderContainer
+from entregaFinal.data.data_login import data_login
 
 @pytest.mark.parametrize("username,password,login_bool", data_login)
 def test_login(driver, caplog, username, password, login_bool):

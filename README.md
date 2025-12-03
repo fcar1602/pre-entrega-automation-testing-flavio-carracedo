@@ -1,9 +1,9 @@
-# Pre-Entrega: Selenium + Python Automation Testing
+# Entrega-Final: Selenium + Python Automation Testing
 
-This repository contains a Selenium-based UI test suite implemented with Python and Pytest. It's organized as a simple page-object driven test project against the SauceDemo demo site (https://www.saucedemo.com). The intent is to provide a clean, reproducible pre-delivery (pre-entrega) automation testing submission.
+This repository contains a Selenium-based UI test suite implemented with Python and Pytest. It's organized as a simple page-object driven test project against the SauceDemo demo site (https://www.saucedemo.com). The intent is to provide a clean, reproducible pre-delivery (Entrega-Final) automation testing submission.
 
 ## Repository name
-pre-entrega-automation-testing-Flavio-Carracedo
+Entrega-Final-automation-testing-Flavio-Carracedo
 
 ---
 
@@ -70,7 +70,7 @@ For local debugging it's easiest to place the driver executable in a `drivers/` 
 
 ## Project structure
 ```
-pre-entrega-automation-testing-[Flavio-Carracedo]
+Entrega-Final-automation-testing-[Flavio-Carracedo]
 ├── preEntrega/
 │   ├── pages/                # Page objects (base_page, login_page, inventory_page, cart_page)
 │   ├── tests/                # Pytest tests

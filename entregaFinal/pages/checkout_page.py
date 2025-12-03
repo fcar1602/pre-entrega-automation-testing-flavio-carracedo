@@ -1,6 +1,4 @@
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from preEntrega.utils.helpers import wait_for_visibility
 from .base_page import BasePage
 
 class SecondaryHeaderContainer(BasePage):

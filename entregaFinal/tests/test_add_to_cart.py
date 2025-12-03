@@ -1,11 +1,11 @@
 import logging
 
 import pytest
-from preEntrega.pages.cart_page import CartListContainer
-from preEntrega.pages.inventory_page import InventoryContainer
-from preEntrega.pages.inventory_page import HeaderContainer
-from preEntrega.pages.login_page import LoginPage
-from preEntrega.data.data_login import valid_login
+from entregaFinal.pages.cart_page import CartListContainer
+from entregaFinal.pages.inventory_page import InventoryContainer
+from entregaFinal.pages.inventory_page import HeaderContainer
+from entregaFinal.pages.login_page import LoginPage
+from entregaFinal.data.data_login import valid_login
 
 @pytest.mark.parametrize("username,password", valid_login)
 def test_add_to_cart(driver, caplog, username, password):
