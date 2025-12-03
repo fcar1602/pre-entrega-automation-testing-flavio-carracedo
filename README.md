@@ -70,7 +70,7 @@ For local debugging it's easiest to place the driver executable in a `drivers/` 
 
 ## Project structure
 ```
-pre-entrega-automation-testing-[nombre-apellido]
+pre-entrega-automation-testing-[Flavio-Carracedo]
 ├── preEntrega/
 │   ├── pages/                # Page objects (base_page, login_page, inventory_page, cart_page)
 │   ├── tests/                # Pytest tests
@@ -91,6 +91,79 @@ pre-entrega-automation-testing-[nombre-apellido]
 - Create or reuse page objects in `preEntrega/pages/`.
 - Add higher-level actions to page classes, keep waits and low-level helpers in `preEntrega/utils/helpers.py`.
 - Write tests in `preEntrega/tests/` using pytest and assert plain English messages.
+
+## API Testing
+
+API tests live under `preEntrega/tests_api` and validate authentication, profile retrieval, and a basic user lifecycle against DummyJSON.
+
+- Location: `preEntrega/tests_api/`
+  - `test_login_api.py`: Login (`POST /auth/login`) and fetch authenticated profile (`GET /auth/me`).
+  - `test_users_api.py`: Login and verify `/user/me` returns expected user details.
+  - `test_create_user_api.py`: Create user, update `lastName`, then delete the user.
+
+### How to run only API tests
+
+```powershell
+python -m pytest -s preEntrega/tests_api -v
+```
+
+### HTML report for API tests
+
+The project is configured (via `pytest.ini`) to generate a self-contained HTML report at `report.html`.
+
+```powershell
+python -m pytest -s preEntrega/tests_api -v --html=report.html --self-contained-html
+```
+
+### Separate HTML reports for E2E and API
+
+You can generate separate reports using dedicated config files:
+
+- E2E config: `pytest-e2e.ini` → writes `report.html`
+- API config: `pytest-api.ini` → writes `reportApi.html`
+
+Run commands:
+
+```powershell
+# E2E (UI) tests with screenshots
+python -m pytest -c pytest-e2e.ini -s -v
+
+# API tests with separate report
+python -m pytest -c pytest-api.ini -s -v
+```
+
+### Fixtures and client
+
+- `api` fixture: provides an `APIClient` initialized with base URL `https://dummyjson.com`.
+- `APIClient.login(username, password)`: stores `accessToken` and sets `Authorization: Bearer <token>` header automatically.
+- `fake` fixture: uses `Faker` to generate realistic payloads.
+- Tests use `caplog` to emit structured logs that appear in the HTML report.
+
+### Endpoints used
+
+- Auth:
+  - `POST /auth/login` → returns `accessToken`, `refreshToken`, and user details.
+  - `GET /auth/me` → returns the authenticated user.
+- Users:
+  - `POST /users/add` → creates a user (mock response shape).
+  - `PUT /users/{id}` → updates user fields (e.g., `lastName`).
+  - `DELETE /users/{id}` → deletes a user.
+
+Note: DummyJSON is a mock API. Some operations may not persist newly created IDs across update/delete, sometimes returning `404`. The tests log the chosen `id` and responses for clarity. If needed, use a known ID (e.g., `5`) for update/delete to demonstrate the flow.
+
+### Quick commands
+
+Run the login + profile test:
+
+```powershell
+python -m pytest -s preEntrega/tests_api/test_login_api.py -v
+```
+
+Run the full user lifecycle test with report:
+
+```powershell
+python -m pytest -s preEntrega/tests_api/test_create_user_api.py -v --html=report.html --self-contained-html
+```
 
 ## CI / GitHub Actions guidance
 - Create `.github/workflows/ci.yml` to run `pytest --html=report.html` in the matrix for desired browsers.
